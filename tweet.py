@@ -1,26 +1,32 @@
 import tweepy
-import os
+import logging
+from config import create_api
+import time
 
-# Authenticate to Twitter
-# auth = tweepy.OAuthHandler("CONSUMER_KEY", "CONSUMER_SECRET")
-# auth.set_access_token("ACCESS_TOKEN", "ACCESS_TOKEN_SECRET")
+from coronabot import data_web_scraping
 
-import tweepy
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger()
 
-# Authenticate to Twitter
-auth = tweepy.OAuthHandler(os.getenv("TWITTER_API_KEY"), TWITTER_API_KEY_SECRET)
-auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+def follow_followers(api):
+    logger.info("Retrieving and following followers")
+    for follower in tweepy.Cursor(api.followers).items():
+        if not follower.following:
+            logger.info(f"Following {follower.name}")
+            follower.follow()
 
-api = tweepy.API(auth)
+def main():
+    api = create_api()
+    casos, obitos, isolamento = data_web_scraping()
+    api.update_status(
+                status='''
+                Posting a tweet through the Twitter API.
+                
+                Testing...''')
+    # while True:
+    #     follow_followers(api)
+    #     logger.info("Waiting...")
+    #     time.sleep(60)
 
-try:
-    api.verify_credentials()
-    print("Authentication OK")
-except:
-    print("Error during authentication")
-
-# # Create API object
-# api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-
-# # Create a tweet
-# api.update_status("Hello Tweepy")
+if __name__ == "__main__":
+    main()

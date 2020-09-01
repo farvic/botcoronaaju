@@ -19,13 +19,16 @@ def main():
     api = create_api()
     casos, obitos, isolamento = data_web_scraping()
     api.update_status(
-                status=f'''Coronavírus em Aracaju
+                status=f'''Dados UTIs e Enfermarias em Sergipe: Total(ocupados %)
 
-Casos confirmados: {res['confirmados']}
-Número de óbitos: {res['obitos']}
-Isolamento Social: {res['isolamento_social']}
+  UTI
+  Pública: {totalUtiPublico} ({utiPublico})
+  Privado: {totalUtiPrivado} ({utiPrivado})
 
-Fique em casa se puder. A luta contra o vírus ainda não acabou!''')
+  Enfermaria:
+  Pública: {totalEnfPublico} ({enfPublicoOcupado})
+  Privada: {totalEnfPrivado} ({enfPrivadoOcupado})
+  ''')
     # while True:
     #     follow_followers(api)
     #     logger.info("Waiting...")
